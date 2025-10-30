@@ -21,6 +21,12 @@ import PersonalInfo from "./components/PersonalInfo";
 import Experiences from "./components/Experiences";
 import Video from "./components/Video";
 
+import ReactGA from "react-ga4"; // Import GA4
+
+// ID di misurazione (es: G-XXXXXXXXXX)
+// const GA_MEASUREMENT_ID = "G-XXXXXXXXXX";
+const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID as string;
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -50,6 +56,42 @@ function TabPanel(props: TabPanelProps) {
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState(0);
+
+    // Inizializzazione GA
+  useEffect(() => {
+    ReactGA.initialize(GA_MEASUREMENT_ID);
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+  }, []);
+
+  // Traccia il cambio di tab come “pageview” personalizzato
+  /*
+  useEffect(() => {
+    const tabName = ["Home", "PersonalInfo", "Experiences", "Video"][currentTab];
+    ReactGA.send({
+      hitType: "pageview",
+      page: `/${tabName}`,
+      title: tabName,
+    });
+  }, [currentTab]);
+  */
+  
+  useEffect(() => {
+    const tabName = ["Home", "PersonalInfo", "Experiences", "Video"][currentTab];
+    
+    // Pageview
+    ReactGA.send({
+      hitType: "pageview",
+      page: `/${tabName}`,
+      title: tabName,
+    });
+
+    // Evento di navigazione
+    ReactGA.event({
+      category: "Navigation",
+      action: "Tab Changed",
+      label: tabName,
+    });
+  }, [currentTab]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);

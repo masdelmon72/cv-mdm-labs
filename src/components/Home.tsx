@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
+import AdBanner from "./AdBanner";
 
 export default function Home() {
   return (
@@ -13,9 +14,10 @@ export default function Home() {
         </Typography>
         <Typography variant="body1" paragraph>
           Naviga tra le diverse sezioni per conoscere il mio profilo professionale, le mie esperienze lavorative e
-          guarda il mio video CV.
+          guarda il mio video CV. Troverai anche una Dashboard per visualizzare graficamente varie analitiche.
         </Typography>
       </Paper>
     </Box>
   );
 }
+

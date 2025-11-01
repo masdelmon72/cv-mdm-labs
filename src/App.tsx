@@ -15,26 +15,24 @@ import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import WorkIcon from "@mui/icons-material/Work";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import Home from "./components/Home";
 import PersonalInfo from "./components/PersonalInfo";
 import Experiences from "./components/Experiences";
 import Video from "./components/Video";
+import Dashboard from "./components/Dashboard";
 
-import ReactGA from "react-ga4"; // Import GA4
+import ReactGA from "react-ga4"; // ✅ Import GA4
 
-// ID di misurazione (es: G-XXXXXXXXXX)
-// const GA_MEASUREMENT_ID = "G-XXXXXXXXXX";
+// ID di misurazione GA4 (es: G-XXXXXXXXXX)
 const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID as string;
 
+// 🎨 Tema Material UI
 const theme = createTheme({
   palette: {
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
+    primary: { main: "#1976d2" },
+    secondary: { main: "#dc004e" },
   },
 });
 
@@ -46,9 +44,14 @@ interface TabPanelProps {
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
-
   return (
-    <div role="tabpanel" hidden={value !== index} id={`tabpanel-${index}`} aria-labelledby={`tab-${index}`} {...other}>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
       {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
     </div>
   );
@@ -57,40 +60,34 @@ function TabPanel(props: TabPanelProps) {
 export default function App() {
   const [currentTab, setCurrentTab] = useState(0);
 
-    // Inizializzazione GA
+  // ✅ 1. Inizializzazione Google Analytics una sola volta
   useEffect(() => {
-    ReactGA.initialize(GA_MEASUREMENT_ID);
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+    if (GA_MEASUREMENT_ID) {
+      ReactGA.initialize(GA_MEASUREMENT_ID);
+      ReactGA.send("pageview"); // Prima pageview
+      console.log("✅ Google Analytics inizializzato:", GA_MEASUREMENT_ID);
+    } else {
+      console.warn("⚠️ GA_MEASUREMENT_ID non impostato in .env");
+    }
   }, []);
 
-  // Traccia il cambio di tab come “pageview” personalizzato
-  /*
+  // ✅ 2. Traccia cambio tab come evento + pageview
   useEffect(() => {
-    const tabName = ["Home", "PersonalInfo", "Experiences", "Video"][currentTab];
-    ReactGA.send({
-      hitType: "pageview",
-      page: `/${tabName}`,
-      title: tabName,
-    });
-  }, [currentTab]);
-  */
-  
-  useEffect(() => {
-    const tabName = ["Home", "PersonalInfo", "Experiences", "Video"][currentTab];
-    
-    // Pageview
+    const tabName = ["Home", "PersonalInfo", "Experiences", "Dashboard", "Video"][currentTab];
+
     ReactGA.send({
       hitType: "pageview",
       page: `/${tabName}`,
       title: tabName,
     });
 
-    // Evento di navigazione
     ReactGA.event({
       category: "Navigation",
       action: "Tab Changed",
       label: tabName,
     });
+
+    console.log(`📊 Navigazione tracciata: ${tabName}`);
   }, [currentTab]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -118,6 +115,7 @@ export default function App() {
             <Tab icon={<HomeIcon />} label="Home" />
             <Tab icon={<PersonIcon />} label="Personal Info" />
             <Tab icon={<WorkIcon />} label="Experiences" />
+            <Tab icon={<DashboardIcon />} label="Dashboard" />
             <Tab icon={<VideoLibraryIcon />} label="Video CV" />
           </Tabs>
         </AppBar>
@@ -133,6 +131,9 @@ export default function App() {
             <Experiences />
           </TabPanel>
           <TabPanel value={currentTab} index={3}>
+            <Dashboard />
+          </TabPanel>
+          <TabPanel value={currentTab} index={4}>
             <Video />
           </TabPanel>
 

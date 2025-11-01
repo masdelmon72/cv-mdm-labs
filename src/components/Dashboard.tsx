@@ -265,7 +265,7 @@ export default function Dashboard() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={companyData} margin={{ bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="company" angle={-45} textAnchor="end" height={100} />
+                <XAxis dataKey="company" angle={-55} textAnchor="end" interval={0} height={120} tick={{ fontSize: 12 }} />
                 <YAxis />
                 <Tooltip />
                 <Bar dataKey="years" fill="#1976d2" />
